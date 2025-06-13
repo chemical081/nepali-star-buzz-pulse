@@ -16,7 +16,7 @@ const NewsSection = ({ title, news, className = "" }: { title: string; news: any
         </h2>
         <div className="flex-1 h-px bg-gray-200 ml-4"></div>
       </div>
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {news.map((article, index) => (
           <NewsCard key={`${title.toLowerCase()}-${article.id}-${index}`} article={article} />
         ))}
@@ -74,7 +74,7 @@ const IndexContent = () => {
                 </div>
                 <div className="flex-1 h-px bg-red-200 ml-4"></div>
               </div>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-4">
                 {pinnedNews.map((article, index) => (
                   <NewsCard key={`breaking-${article.id}-${index}`} article={article} />
                 ))}
@@ -98,27 +98,29 @@ const IndexContent = () => {
         <div className="lg:col-span-1">
           {/* Trending Section */}
           {trendingNews.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
                 {t('trending')}
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {trendingNews.map((article, index) => (
-                  <div key={`trending-${article.id}-${index}`} className="flex items-start space-x-3 group cursor-pointer">
-                    <div className="w-16 h-12 flex-shrink-0 overflow-hidden rounded">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-red-600 transition-colors">
-                        {article.title}
-                      </h4>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {new Date(article.publishedAt).toLocaleDateString()}
-                      </p>
+                  <div key={`trending-${article.id}-${index}`} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-16 h-12 flex-shrink-0 overflow-hidden rounded">
+                        <img
+                          src={article.image}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-red-600 transition-colors">
+                          {article.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(article.publishedAt).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -128,13 +130,13 @@ const IndexContent = () => {
 
           {/* Sports Section */}
           {sportsNews.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-                Sports
+                {t('sports')}
               </h3>
               <div className="space-y-3">
                 {sportsNews.map((article, index) => (
-                  <div key={`sports-${article.id}-${index}`} className="group cursor-pointer">
+                  <div key={`sports-${article.id}-${index}`} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
                     <h4 className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-red-600 transition-colors mb-1">
                       {article.title}
                     </h4>
@@ -148,7 +150,7 @@ const IndexContent = () => {
           )}
 
           {/* Popular Tags */}
-          <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               Popular Tags
             </h3>
@@ -156,7 +158,7 @@ const IndexContent = () => {
               {['Bollywood', 'Hollywood', 'Music', 'Fashion', 'Awards', 'Movies', 'TV Shows', 'Celebrity Life'].map((tag) => (
                 <span
                   key={tag}
-                  className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-red-100 hover:text-red-700 cursor-pointer transition-colors border"
+                  className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-red-100 hover:text-red-700 cursor-pointer transition-colors border shadow-sm hover:shadow-md"
                 >
                   #{tag}
                 </span>
