@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 type Language = 'en' | 'np';
 
@@ -16,26 +16,22 @@ const translations = {
     celebrities: 'Celebrities',
     entertainment: 'Entertainment',
     trending: 'Trending',
+    sports: 'Sports',
     searchPlaceholder: 'Search news...',
-    pinned: 'Pinned',
-    readMore: 'Read More',
-    admin: 'Admin',
+    pinned: 'PINNED',
+    breaking: 'BREAKING',
+    latestNews: 'Latest News',
     login: 'Login',
     logout: 'Logout',
-    createPost: 'Create Post',
+    dashboard: 'Admin Dashboard',
+    createPost: 'Create New Post',
     editPost: 'Edit Post',
     deletePost: 'Delete Post',
-    pinPost: 'Pin Post',
-    unpinPost: 'Unpin Post',
-    title: 'Title',
-    content: 'Content',
+    published: 'Published',
+    draft: 'Draft',
     category: 'Category',
-    image: 'Image',
-    video: 'Video',
-    save: 'Save',
-    cancel: 'Cancel',
-    publish: 'Publish',
-    draft: 'Draft'
+    author: 'Author',
+    publishedAt: 'Published At'
   },
   np: {
     siteTitle: 'नेपाली स्टार बज',
@@ -43,32 +39,28 @@ const translations = {
     celebrities: 'सेलिब्रिटी',
     entertainment: 'मनोरञ्जन',
     trending: 'ट्रेन्डिङ',
+    sports: 'खेलकुद',
     searchPlaceholder: 'समाचार खोज्नुहोस्...',
     pinned: 'पिन गरिएको',
-    readMore: 'थप पढ्नुहोस्',
-    admin: 'एडमिन',
-    login: 'लगइन',
+    breaking: 'ब्रेकिङ',
+    latestNews: 'ताजा समाचार',
+    login: 'लगिन',
     logout: 'लगआउट',
-    createPost: 'पोस्ट सिर्जना गर्नुहोस्',
+    dashboard: 'एडमिन ड्यासबोर्ड',
+    createPost: 'नयाँ पोस्ट सिर्जना गर्नुहोस्',
     editPost: 'पोस्ट सम्पादन गर्नुहोस्',
     deletePost: 'पोस्ट मेटाउनुहोस्',
-    pinPost: 'पोस्ट पिन गर्नुहोस्',
-    unpinPost: 'पोस्ट अनपिन गर्नुहोस्',
-    title: 'शीर्षक',
-    content: 'सामग्री',
+    published: 'प्रकाशित',
+    draft: 'ड्राफ्ट',
     category: 'श्रेणी',
-    image: 'तस्बिर',
-    video: 'भिडियो',
-    save: 'सेभ गर्नुहोस्',
-    cancel: 'रद्द गर्नुहोस्',
-    publish: 'प्रकाशित गर्नुहोस्',
-    draft: 'ड्राफ्ट'
+    author: 'लेखक',
+    publishedAt: 'प्रकाशित मिति'
   }
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
   const toggleLanguage = () => {
