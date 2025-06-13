@@ -37,73 +37,143 @@ export const NewsCard = ({ article }: NewsCardProps) => {
   const title = language === 'en' ? article.title : article.titleNp;
   const excerpt = language === 'en' ? article.excerpt : article.excerptNp;
 
-  return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-      {article.isPinned && (
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 flex items-center space-x-2">
-          <Pin className="w-4 h-4" />
-          <span className="text-sm font-semibold">{t('pinned')}</span>
-        </div>
-      )}
-      
-      <div className="relative overflow-hidden">
-        {article.video ? (
-          <video
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-            poster={article.image}
-            controls
-          >
-            <source src={article.video} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            src={article.image}
-            alt={title}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        )}
-        <div className="absolute top-2 left-2">
-          <span className="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-            {article.category}
-          </span>
-        </div>
-      </div>
-      
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:text-purple-600 transition-colors cursor-pointer">
-          {title}
-        </h3>
-        
-        <p className="text-gray-600 mb-4 line-clamp-3">
-          {excerpt}
-        </p>
-        
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-          <span className="font-medium">{article.author}</span>
-          <time>{new Date(article.publishedAt).toLocaleDateString()}</time>
-        </div>
-        
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={handleLike}
-              variant="ghost"
-              size="sm"
-              className={`flex items-center space-x-1 ${liked ? 'text-red-500' : 'text-gray-500'}`}
-            >
-              <Heart className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
-              <span>{likesCount}</span>
-            </Button>
-            
-            <Button variant="ghost" size="sm" className="flex items-center space-x-1 text-gray-500">
-              <MessageCircle className="w-4 h-4" />
-              <span>{article.comments}</span>
-            </Button>
+  if (article.isPinned) {
+    return (
+      <div className="bg-white border-l-4 border-red-600 shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden mb-4">
+        <div className="flex">
+          <div className="w-32 h-24 flex-shrink-0">
+            {article.video ? (
+              <video
+                className="w-full h-full object-cover"
+                poster={article.image}
+                controls
+              >
+                <source src={article.video} type="video/mp4" />
+              </video>
+            ) : (
+              <img
+                src={article.image}
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
           
-          <Button variant="ghost" size="sm" className="text-gray-500">
-            <Share2 className="w-4 h-4" />
-          </Button>
+          <div className="flex-1 p-3">
+            <div className="flex items-center space-x-2 mb-2">
+              <Pin className="w-4 h-4 text-red-600" />
+              <span className="bg-red-600 text-white px-2 py-0.5 rounded text-xs font-semibold">
+                {t('pinned')}
+              </span>
+              <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">
+                {article.category}
+              </span>
+            </div>
+            
+            <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 hover:text-red-600 transition-colors cursor-pointer">
+              {title}
+            </h3>
+            
+            <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+              {excerpt}
+            </p>
+            
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center space-x-4">
+                <span className="font-medium">{article.author}</span>
+                <time>{new Date(article.publishedAt).toLocaleDateString()}</time>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <Button
+                  onClick={handleLike}
+                  variant="ghost"
+                  size="sm"
+                  className={`flex items-center space-x-1 h-6 px-2 ${liked ? 'text-red-500' : 'text-gray-500'}`}
+                >
+                  <Heart className={`w-3 h-3 ${liked ? 'fill-current' : ''}`} />
+                  <span className="text-xs">{likesCount}</span>
+                </Button>
+                
+                <Button variant="ghost" size="sm" className="flex items-center space-x-1 text-gray-500 h-6 px-2">
+                  <MessageCircle className="w-3 h-3" />
+                  <span className="text-xs">{article.comments}</span>
+                </Button>
+                
+                <Button variant="ghost" size="sm" className="text-gray-500 h-6 px-2">
+                  <Share2 className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+      <div className="flex">
+        <div className="w-24 h-18 flex-shrink-0">
+          {article.video ? (
+            <video
+              className="w-full h-full object-cover"
+              poster={article.image}
+              controls
+            >
+              <source src={article.video} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={article.image}
+              alt={title}
+              className="w-full h-full object-cover"
+            />
+          )}
+        </div>
+        
+        <div className="flex-1 p-3">
+          <div className="flex items-center space-x-2 mb-1">
+            <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">
+              {article.category}
+            </span>
+          </div>
+          
+          <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 hover:text-red-600 transition-colors cursor-pointer">
+            {title}
+          </h3>
+          
+          <p className="text-gray-600 text-xs mb-2 line-clamp-1">
+            {excerpt}
+          </p>
+          
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center space-x-2">
+              <span className="text-xs">{article.author}</span>
+              <time className="text-xs">{new Date(article.publishedAt).toLocaleDateString()}</time>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={handleLike}
+                variant="ghost"
+                size="sm"
+                className={`flex items-center space-x-1 h-5 px-1 ${liked ? 'text-red-500' : 'text-gray-500'}`}
+              >
+                <Heart className={`w-3 h-3 ${liked ? 'fill-current' : ''}`} />
+                <span className="text-xs">{likesCount}</span>
+              </Button>
+              
+              <Button variant="ghost" size="sm" className="flex items-center space-x-1 text-gray-500 h-5 px-1">
+                <MessageCircle className="w-3 h-3" />
+                <span className="text-xs">{article.comments}</span>
+              </Button>
+              
+              <Button variant="ghost" size="sm" className="text-gray-500 h-5 px-1">
+                <Share2 className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
