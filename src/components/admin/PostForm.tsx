@@ -22,7 +22,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
     excerptNp: post?.excerptNp || '',
     content: post?.content || '',
     contentNp: post?.contentNp || '',
-    category: post?.category || 'Movies',
+    category: post?.category || 'Celebrity',
     image: post?.image || '',
     video: post?.video || '',
     author: post?.author || 'Admin',
@@ -37,7 +37,22 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
     onSave(formData);
   };
 
-  const categories = ['Movies', 'Music', 'Fashion', 'Awards', 'Entertainment', 'Trending'];
+  const categories = [
+    'Celebrity',
+    'Entertainment', 
+    'Trending',
+    'Sports',
+    'Bollywood',
+    'Hollywood',
+    'Music',
+    'Fashion',
+    'Awards',
+    'Movies',
+    'TV Shows',
+    'Celebrity Life',
+    'Breaking News',
+    'Latest News'
+  ];
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
@@ -48,7 +63,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="title">{t('title')} (English)</Label>
+            <Label htmlFor="title">Title (English)</Label>
             <Input
               id="title"
               value={formData.title}
@@ -58,7 +73,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
           </div>
           
           <div>
-            <Label htmlFor="titleNp">{t('title')} (Nepali)</Label>
+            <Label htmlFor="titleNp">Title (Nepali)</Label>
             <Input
               id="titleNp"
               value={formData.titleNp}
@@ -91,6 +106,30 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
             />
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="content">Content (English)</Label>
+            <Textarea
+              id="content"
+              value={formData.content}
+              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+              rows={5}
+              placeholder="Write the full article content here..."
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="contentNp">Content (Nepali)</Label>
+            <Textarea
+              id="contentNp"
+              value={formData.contentNp}
+              onChange={(e) => setFormData(prev => ({ ...prev, contentNp: e.target.value }))}
+              rows={5}
+              placeholder="पूरा लेखको सामग्री यहाँ लेख्नुहोस्..."
+            />
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -120,7 +159,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="image">{t('image')} URL</Label>
+            <Label htmlFor="image">Image URL</Label>
             <Input
               id="image"
               type="url"
@@ -131,7 +170,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
           </div>
           
           <div>
-            <Label htmlFor="video">{t('video')} URL (Optional)</Label>
+            <Label htmlFor="video">Video URL (Optional)</Label>
             <Input
               id="video"
               type="url"
@@ -150,15 +189,15 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
             onChange={(e) => setFormData(prev => ({ ...prev, isPinned: e.target.checked }))}
             className="rounded"
           />
-          <Label htmlFor="isPinned">{t('pinPost')}</Label>
+          <Label htmlFor="isPinned">Pin this post (will appear in Breaking News section)</Label>
         </div>
         
         <div className="flex justify-end space-x-4">
           <Button type="button" onClick={onCancel} variant="outline">
-            {t('cancel')}
+            Cancel
           </Button>
-          <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
-            {t('save')}
+          <Button type="submit" className="bg-red-600 hover:bg-red-700">
+            {post ? 'Update Post' : 'Create Post'}
           </Button>
         </div>
       </form>

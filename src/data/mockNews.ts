@@ -65,7 +65,7 @@ export const mockNews = [
     image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop',
     author: 'Fashion Editor',
     publishedAt: '2024-01-13T11:45:00Z',
-    category: 'Entertainment',
+    category: 'Fashion',
     isPinned: false,
     likes: 198,
     comments: 19
@@ -79,9 +79,37 @@ export const mockNews = [
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=250&fit=crop',
     author: 'Entertainment News',
     publishedAt: '2024-01-12T16:00:00Z',
-    category: 'Trending',
+    category: 'Hollywood',
     isPinned: false,
     likes: 445,
     comments: 78
+  },
+  {
+    id: '7',
+    title: 'Kathmandu Film Festival Awards Night Results',
+    titleNp: 'काठमाडौं फिल्म फेस्टिभल अवार्ड नाइटको नतिजा',
+    excerpt: 'The annual film festival concluded with a glamorous awards ceremony recognizing outstanding contributions to cinema.',
+    excerptNp: 'वार्षिक फिल्म फेस्टिभल सिनेमामा उत्कृष्ट योगदानलाई मान्यता दिने एक आकर्षक पुरस्कार समारोहसँगै समाप्त भयो।',
+    image: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=250&fit=crop',
+    author: 'Film Critic',
+    publishedAt: '2024-01-11T20:30:00Z',
+    category: 'Awards',
+    isPinned: false,
+    likes: 312,
+    comments: 56
+  },
+  {
+    id: '8',
+    title: 'Breaking: Major Nepali Production House Announces 5 New Films',
+    titleNp: 'ब्रेकिङ: प्रमुख नेपाली प्रोडक्सन हाउसले ५ नयाँ फिल्मको घोषणा गर्यो',
+    excerpt: 'One of Nepal\'s biggest production companies has revealed plans for five major film projects for 2024.',
+    excerptNp: 'नेपालको सबैभन्दा ठूलो प्रोडक्सन कम्पनीहरू मध्ये एकले २०२४ का लागि पाँच प्रमुख फिल्म परियोजनाको योजना सार्वजनिक गरेको छ।',
+    image: 'https://images.unsplash.com/photo-1489599763300-9551b77c0c2e?w=400&h=250&fit=crop',
+    author: 'Movie Reporter',
+    publishedAt: '2024-01-10T12:00:00Z',
+    category: 'Movies',
+    isPinned: true,
+    likes: 523,
+    comments: 89
   }
 ];

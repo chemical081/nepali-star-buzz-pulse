@@ -24,6 +24,7 @@ const translations = {
     login: 'Login',
     logout: 'Logout',
     dashboard: 'Admin Dashboard',
+    admin: 'Admin',
     createPost: 'Create New Post',
     editPost: 'Edit Post',
     deletePost: 'Delete Post',
@@ -31,7 +32,13 @@ const translations = {
     draft: 'Draft',
     category: 'Category',
     author: 'Author',
-    publishedAt: 'Published At'
+    publishedAt: 'Published At',
+    title: 'Title',
+    image: 'Image',
+    video: 'Video',
+    pinPost: 'Pin Post',
+    cancel: 'Cancel',
+    save: 'Save'
   },
   np: {
     siteTitle: 'नेपाली स्टार बज',
@@ -47,6 +54,7 @@ const translations = {
     login: 'लगिन',
     logout: 'लगआउट',
     dashboard: 'एडमिन ड्यासबोर्ड',
+    admin: 'एडमिन',
     createPost: 'नयाँ पोस्ट सिर्जना गर्नुहोस्',
     editPost: 'पोस्ट सम्पादन गर्नुहोस्',
     deletePost: 'पोस्ट मेटाउनुहोस्',
@@ -54,7 +62,13 @@ const translations = {
     draft: 'ड्राफ्ट',
     category: 'श्रेणी',
     author: 'लेखक',
-    publishedAt: 'प्रकाशित मिति'
+    publishedAt: 'प्रकाशित मिति',
+    title: 'शीर्षक',
+    image: 'तस्बिर',
+    video: 'भिडियो',
+    pinPost: 'पोस्ट पिन गर्नुहोस्',
+    cancel: 'रद्द गर्नुहोस्',
+    save: 'सेभ गर्नुहोस्'
   }
 };
 
