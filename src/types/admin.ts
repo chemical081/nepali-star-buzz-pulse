@@ -1,37 +1,41 @@
 
-// Admin and permission type definitions
+// Admin user types and permissions
+export interface Permission {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface AdminUser {
   id: string;
   username: string;
   email: string;
   role: 'super_admin' | 'admin' | 'editor';
-  permissions: AdminPermission[];
+  permissions: Permission[];
   createdAt: string;
-  lastLogin?: string;
   isActive: boolean;
+  lastLogin?: string;
   createdBy?: string;
 }
 
-export interface AdminPermission {
-  id: string;
-  name: string;
-  description: string;
-  category: 'posts' | 'users' | 'settings' | 'analytics';
-}
-
-export const DEFAULT_PERMISSIONS: AdminPermission[] = [
-  { id: 'create_posts', name: 'Create Posts', description: 'Can create new posts', category: 'posts' },
-  { id: 'edit_posts', name: 'Edit Posts', description: 'Can edit existing posts', category: 'posts' },
-  { id: 'delete_posts', name: 'Delete Posts', description: 'Can delete posts', category: 'posts' },
-  { id: 'manage_categories', name: 'Manage Categories', description: 'Can manage post categories', category: 'posts' },
-  { id: 'manage_admins', name: 'Manage Admins', description: 'Can add/remove admin users', category: 'users' },
-  { id: 'view_analytics', name: 'View Analytics', description: 'Can view site analytics', category: 'analytics' },
-  { id: 'site_settings', name: 'Site Settings', description: 'Can modify site settings', category: 'settings' },
+export const DEFAULT_PERMISSIONS: Permission[] = [
+  { id: 'view_dashboard', name: 'View Dashboard', description: 'Access to admin dashboard' },
+  { id: 'create_posts', name: 'Create Posts', description: 'Create and edit posts' },
+  { id: 'delete_posts', name: 'Delete Posts', description: 'Delete posts' },
+  { id: 'manage_categories', name: 'Manage Categories', description: 'Create and manage post categories' },
+  { id: 'manage_users', name: 'Manage Users', description: 'View and manage user accounts' },
+  { id: 'manage_admins', name: 'Manage Admins', description: 'Create and manage admin users' },
+  { id: 'manage_stories', name: 'Manage Stories', description: 'Create and manage stories' },
+  { id: 'view_analytics', name: 'View Analytics', description: 'Access to site analytics' },
+  { id: 'manage_settings', name: 'Manage Settings', description: 'Modify site settings' }
 ];
 
-// Role-based default permissions
 export const ROLE_PERMISSIONS = {
   super_admin: DEFAULT_PERMISSIONS,
-  admin: DEFAULT_PERMISSIONS.filter(p => p.id !== 'manage_admins'),
-  editor: DEFAULT_PERMISSIONS.filter(p => p.category === 'posts' && p.id !== 'delete_posts'),
+  admin: DEFAULT_PERMISSIONS.filter(p => 
+    !['manage_admins', 'manage_settings'].includes(p.id)
+  ),
+  editor: DEFAULT_PERMISSIONS.filter(p => 
+    ['view_dashboard', 'create_posts', 'manage_categories', 'manage_stories'].includes(p.id)
+  )
 };

@@ -1,98 +1,80 @@
 
-// Modern sidebar component with role-based navigation
+// Admin sidebar component with role-based navigation
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, 
   FileText, 
   Users, 
-  Settings, 
-  BarChart3,
-  LogOut,
-  Crown,
-  Shield
+  Video,
+  Settings
 } from 'lucide-react';
 
 interface AdminSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onLogout: () => void;
 }
 
-export const AdminSidebar = ({ activeTab, onTabChange, onLogout }: AdminSidebarProps) => {
-  const { currentAdmin, hasPermission } = useAuth();
+export const AdminSidebar = ({ activeTab, onTabChange }: AdminSidebarProps) => {
+  const { hasPermission } = useAuth();
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: null },
-    { id: 'posts', label: 'Posts', icon: FileText, permission: 'create_posts' },
-    { id: 'admins', label: 'Admin Users', icon: Users, permission: 'manage_admins' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, permission: 'view_analytics' },
-    { id: 'settings', label: 'Settings', icon: Settings, permission: 'site_settings' },
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      permission: null
+    },
+    {
+      id: 'posts',
+      label: 'Posts',
+      icon: FileText,
+      permission: 'create_posts'
+    },
+    {
+      id: 'stories',
+      label: 'Stories',
+      icon: Video,
+      permission: 'manage_stories'
+    },
+    {
+      id: 'admins',
+      label: 'Admin Users',
+      icon: Users,
+      permission: 'manage_admins'
+    }
   ];
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'super_admin': return <Crown className="w-4 h-4 text-yellow-500" />;
-      case 'admin': return <Shield className="w-4 h-4 text-blue-500" />;
-      default: return <Shield className="w-4 h-4 text-gray-400" />;
-    }
-  };
+  const filteredMenuItems = menuItems.filter(item => 
+    !item.permission || hasPermission(item.permission)
+  );
 
   return (
-    <div className="w-64 bg-gradient-to-b from-red-600 to-red-700 text-white min-h-screen flex flex-col">
-      {/* Header */}
-      <div className="p-6 border-b border-red-500">
-        <h1 className="text-xl font-bold">Nepali Star Admin</h1>
-        <div className="mt-4 flex items-center space-x-2">
-          {getRoleIcon(currentAdmin?.role || '')}
-          <div>
-            <p className="text-sm font-medium">{currentAdmin?.username}</p>
-            <p className="text-xs text-red-200 capitalize">{currentAdmin?.role?.replace('_', ' ')}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {menuItems.map((item) => {
+    <aside className="w-64 bg-white shadow-sm border-r border-gray-200 min-h-screen">
+      <div className="p-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-6">Admin Panel</h2>
+        <nav className="space-y-2">
+          {filteredMenuItems.map((item) => {
             const Icon = item.icon;
-            const canAccess = !item.permission || hasPermission(item.permission);
-            
-            if (!canAccess) return null;
-
             return (
-              <li key={item.id}>
-                <Button
-                  onClick={() => onTabChange(item.id)}
-                  variant={activeTab === item.id ? "secondary" : "ghost"}
-                  className={`w-full justify-start text-left ${
-                    activeTab === item.id 
-                      ? 'bg-red-500 text-white' 
-                      : 'text-red-100 hover:bg-red-500 hover:text-white'
-                  }`}
-                >
-                  <Icon className="w-4 h-4 mr-3" />
-                  {item.label}
-                </Button>
-              </li>
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={cn(
+                  "w-full flex items-center space-x-3 px-4 py-3 text-left rounded-lg transition-colors",
+                  activeTab === item.id
+                    ? "bg-red-50 text-red-700 border border-red-200"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                )}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </button>
             );
           })}
-        </ul>
-      </nav>
-
-      {/* Logout */}
-      <div className="p-4 border-t border-red-500">
-        <Button
-          onClick={onLogout}
-          variant="ghost"
-          className="w-full justify-start text-red-100 hover:bg-red-500 hover:text-white"
-        >
-          <LogOut className="w-4 h-4 mr-3" />
-          Logout
-        </Button>
+        </nav>
       </div>
-    </div>
+    </aside>
   );
 };

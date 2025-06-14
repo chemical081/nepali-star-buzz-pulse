@@ -1,17 +1,19 @@
+
 // Updated admin dashboard with role-based access and enhanced features
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { AdminLogin } from '@/components/admin/AdminLogin';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 import { AdminSidebar } from '@/frontend/components/admin/AdminSidebar';
 import { AdminManagement } from '@/frontend/components/admin/AdminManagement';
 import { PostEditor } from '@/frontend/components/admin/enhanced-post-editor/PostEditor';
 import { PostsList } from '@/components/admin/PostsList';
-import { AdminLogin } from '@/components/admin/AdminLogin';
+import { StoriesManagement } from '@/frontend/components/admin/StoriesManagement';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Post } from '@/types/post';
 import { mockNews } from '@/data/mockNews';
 import { transformLegacyPosts } from '@/utils/postHelpers';
-import { BarChart3, FileText, Users, TrendingUp } from 'lucide-react';
+import { FileText, Users, Video } from 'lucide-react';
 
 const AdminDashboardContent = () => {
   const { currentAdmin, logout, hasPermission, isLoading } = useAuth();
@@ -20,24 +22,21 @@ const AdminDashboardContent = () => {
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [showPostEditor, setShowPostEditor] = useState(false);
 
-  // Dashboard statistics
-  const stats = {
-    totalPosts: posts.length,
-    publishedPosts: posts.filter(p => p.status === 'published').length,
-    draftPosts: posts.filter(p => p.status === 'draft').length,
-    pinnedPosts: posts.filter(p => p.isPinned).length,
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
 
-  const handleSavePost = (postData: Post) => {
-    if (editingPost) {
-      setPosts(prev => prev.map(post => 
-        post.id === editingPost.id ? postData : post
-      ));
-    } else {
-      setPosts(prev => [postData, ...prev]);
-    }
-    setShowPostEditor(false);
+  if (!currentAdmin) {
+    return <AdminLogin />;
+  }
+
+  const handleCreatePost = () => {
     setEditingPost(null);
+    setShowPostEditor(true);
   };
 
   const handleEditPost = (post: Post) => {
@@ -45,23 +44,28 @@ const AdminDashboardContent = () => {
     setShowPostEditor(true);
   };
 
-  const handleDeletePost = (postId: string) => {
-    if (confirm('Are you sure you want to delete this post?')) {
-      setPosts(prev => prev.filter(post => post.id !== postId));
+  const handleSavePost = (postData: Partial<Post>) => {
+    if (editingPost) {
+      setPosts(prev => prev.map(p => p.id === editingPost.id ? { ...p, ...postData } : p));
+    } else {
+      const newPost: Post = {
+        id: Date.now().toString(),
+        ...postData,
+        publishedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: 'published'
+      } as Post;
+      setPosts(prev => [newPost, ...prev]);
     }
-  };
-
-  const handleTogglePin = (postId: string) => {
-    setPosts(prev => prev.map(post => 
-      post.id === postId ? { ...post, isPinned: !post.isPinned } : post
-    ));
+    setShowPostEditor(false);
+    setEditingPost(null);
   };
 
   const renderContent = () => {
     if (showPostEditor) {
       return (
         <PostEditor
-          post={editingPost || undefined}
+          post={editingPost}
           onSave={handleSavePost}
           onCancel={() => {
             setShowPostEditor(false);
@@ -72,187 +76,105 @@ const AdminDashboardContent = () => {
     }
 
     switch (activeTab) {
-      case 'dashboard':
+      case 'posts':
+        return (
+          <PostsList
+            posts={posts}
+            onCreatePost={handleCreatePost}
+            onEditPost={handleEditPost}
+          />
+        );
+      case 'stories':
+        return hasPermission('manage_stories') ? <StoriesManagement /> : <div>Access denied</div>;
+      case 'admins':
+        return hasPermission('manage_admins') ? <AdminManagement /> : <div>Access denied</div>;
+      default:
         return (
           <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
             
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="border-red-200 hover:shadow-lg transition-shadow">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-                  <FileText className="h-4 w-4" />
+                  <CardTitle className="text-sm font-medium text-gray-600">Total Posts</CardTitle>
+                  <FileText className="h-4 w-4 text-red-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalPosts}</div>
+                  <div className="text-2xl font-bold text-gray-900">{posts.length}</div>
+                  <p className="text-xs text-gray-500">Published articles</p>
                 </CardContent>
               </Card>
-              
-              <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+
+              <Card className="border-red-200 hover:shadow-lg transition-shadow">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Published</CardTitle>
-                  <TrendingUp className="h-4 w-4" />
+                  <CardTitle className="text-sm font-medium text-gray-600">Stories</CardTitle>
+                  <Video className="h-4 w-4 text-red-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.publishedPosts}</div>
+                  <div className="text-2xl font-bold text-gray-900">12</div>
+                  <p className="text-xs text-gray-500">Active stories</p>
                 </CardContent>
               </Card>
-              
-              <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
+
+              <Card className="border-red-200 hover:shadow-lg transition-shadow">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Drafts</CardTitle>
-                  <FileText className="h-4 w-4" />
+                  <CardTitle className="text-sm font-medium text-gray-600">Admin Users</CardTitle>
+                  <Users className="h-4 w-4 text-red-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.draftPosts}</div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pinned</CardTitle>
-                  <TrendingUp className="h-4 w-4" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.pinnedPosts}</div>
+                  <div className="text-2xl font-bold text-gray-900">3</div>
+                  <p className="text-xs text-gray-500">Active admins</p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Recent Activity */}
-            <Card>
+            <Card className="border-red-200">
               <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
+                <CardTitle className="text-gray-900">Recent Activity</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {posts.slice(0, 5).map(post => (
-                    <div key={post.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <h4 className="font-medium">{post.title}</h4>
-                        <p className="text-sm text-gray-600">{post.category}</p>
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {new Date(post.updatedAt).toLocaleDateString()}
-                      </div>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 bg-red-50 rounded-lg">
+                    <FileText className="h-5 w-5 text-red-600" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">New post published</p>
+                      <p className="text-xs text-gray-500">2 hours ago</p>
                     </div>
-                  ))}
+                  </div>
+                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <Video className="h-5 w-5 text-gray-600" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Story uploaded</p>
+                      <p className="text-xs text-gray-500">5 hours ago</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
         );
-      
-      case 'posts':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold text-gray-900">Posts</h1>
-              {hasPermission('create_posts') && (
-                <button
-                  onClick={() => {
-                    setEditingPost(null);
-                    setShowPostEditor(true);
-                  }}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
-                >
-                  <FileText className="w-4 h-4" />
-                  <span>New Post</span>
-                </button>
-              )}
-            </div>
-            
-            <PostsList
-              posts={posts}
-              onEdit={handleEditPost}
-              onDelete={handleDeletePost}
-              onTogglePin={handleTogglePin}
-            />
-          </div>
-        );
-      
-      case 'admins':
-        return <AdminManagement />;
-      
-      case 'analytics':
-        return (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
-            <Card>
-              <CardContent className="p-8 text-center">
-                <BarChart3 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600">Analytics dashboard coming soon...</p>
-              </CardContent>
-            </Card>
-          </div>
-        );
-      
-      case 'settings':
-        return (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-            <Card>
-              <CardContent className="p-8 text-center">
-                <p className="text-gray-600">Site settings coming soon...</p>
-              </CardContent>
-            </Card>
-          </div>
-        );
-      
-      default:
-        return <div>Page not found</div>;
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <AdminSidebar
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        onLogout={logout}
-      />
-      
-      <main className="flex-1 p-8">
-        {renderContent()}
-      </main>
+    <div className="min-h-screen bg-gray-50">
+      <AdminHeader currentAdmin={currentAdmin} onLogout={logout} />
+      <div className="flex">
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <main className="flex-1 p-6">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 };
 
 const AdminDashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const handleLogin = async (credentials: { username: string; password: string }) => {
-    // This will be handled by the AuthProvider now
-    setIsAuthenticated(true);
-  };
-
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <AdminDashboardWrapper onLogin={handleLogin} />
-      </AuthProvider>
-    </LanguageProvider>    
+    <AuthProvider>
+      <AdminDashboardContent />
+    </AuthProvider>
   );
-};
-
-const AdminDashboardWrapper = ({ onLogin }: { onLogin: (credentials: any) => void }) => {
-  const { currentAdmin } = useAuth();
-
-  if (!currentAdmin) {
-    return <AdminLogin onLogin={onLogin} />;
-  }
-
-  return <AdminDashboardContent />;
 };
 
 export default AdminDashboard;

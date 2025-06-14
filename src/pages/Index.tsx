@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
+import { Stories } from '@/components/Stories';
+import { ContactUs } from '@/components/ContactUs';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { mockNews } from '@/data/mockNews';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -27,8 +29,10 @@ const NewsSection = ({ title, news, className = "" }: { title: string; news: any
 
 const IndexContent = () => {
   const [news, setNews] = useState(mockNews);
+  const [filteredNews, setFilteredNews] = useState(mockNews);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -52,41 +56,118 @@ const IndexContent = () => {
     }, 1000);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredNews(news);
+      return;
+    }
+
+    const filtered = news.filter(article => 
+      article.title.toLowerCase().includes(query.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(query.toLowerCase()) ||
+      article.category.toLowerCase().includes(query.toLowerCase()) ||
+      (article.titleNp && article.titleNp.toLowerCase().includes(query.toLowerCase())) ||
+      (article.excerptNp && article.excerptNp.toLowerCase().includes(query.toLowerCase()))
+    );
+    setFilteredNews(filtered);
+  };
+
+  useEffect(() => {
+    setFilteredNews(news);
+  }, [news]);
+
+  // Use filtered news for display
+  const displayNews = searchQuery ? filteredNews : news;
+
   // Categorize news
-  const pinnedNews = news.filter(article => article.isPinned);
-  const celebrityNews = news.filter(article => article.category === 'Celebrity' && !article.isPinned).slice(0, 6);
-  const entertainmentNews = news.filter(article => article.category === 'Entertainment' && !article.isPinned).slice(0, 6);
-  const trendingNews = news.filter(article => article.category === 'Trending' && !article.isPinned).slice(0, 4);
-  const sportsNews = news.filter(article => article.category === 'Sports' && !article.isPinned).slice(0, 4);
-  const otherNews = news.filter(article => !['Celebrity', 'Entertainment', 'Trending', 'Sports'].includes(article.category) && !article.isPinned);
+  const pinnedNews = displayNews.filter(article => article.isPinned);
+  const celebrityNews = displayNews.filter(article => article.category === 'Celebrity' && !article.isPinned).slice(0, 6);
+  const entertainmentNews = displayNews.filter(article => article.category === 'Entertainment' && !article.isPinned).slice(0, 6);
+  const trendingNews = displayNews.filter(article => article.category === 'Trending' && !article.isPinned).slice(0, 4);
+  const sportsNews = displayNews.filter(article => article.category === 'Sports' && !article.isPinned).slice(0, 4);
+  const otherNews = displayNews.filter(article => !['Celebrity', 'Entertainment', 'Trending', 'Sports'].includes(article.category) && !article.isPinned);
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-6xl">
+      {/* Stories Section */}
+      <div id="stories">
+        <Stories />
+      </div>
+
+      {searchQuery && (
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+          <p className="text-blue-800">
+            Search results for: <strong>"{searchQuery}"</strong> ({filteredNews.length} results)
+          </p>
+          {filteredNews.length === 0 && (
+            <p className="text-blue-600 mt-2">No articles found matching your search.</p>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2">
-          {/* Breaking/Pinned News */}
+          {/* Breaking/Pinned News - Enhanced Display */}
           {pinnedNews.length > 0 && (
             <div className="mb-8">
-              <div className="flex items-center mb-4">
-                <div className="bg-red-600 text-white px-3 py-1 text-sm font-bold uppercase">
+              <div className="flex items-center mb-6">
+                <div className="bg-red-600 text-white px-4 py-2 text-sm font-bold uppercase rounded-l-lg">
                   {t('breaking')}
                 </div>
                 <div className="flex-1 h-px bg-red-200 ml-4"></div>
               </div>
-              <div className="grid grid-cols-1 gap-4">
-                {pinnedNews.map((article, index) => (
-                  <NewsCard key={`breaking-${article.id}-${index}`} article={article} />
+              <div className="grid grid-cols-1 gap-6">
+                {pinnedNews.slice(0, 1).map((article, index) => (
+                  <div key={`featured-${article.id}-${index}`} className="relative group cursor-pointer">
+                    <div className="aspect-video overflow-hidden rounded-xl shadow-lg">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <span className="inline-block bg-red-600 text-xs font-bold px-3 py-1 rounded-full mb-3">
+                          {article.category}
+                        </span>
+                        <h2 className="text-2xl font-bold mb-2 leading-tight">
+                          {article.title}
+                        </h2>
+                        <p className="text-gray-200 text-sm leading-relaxed">
+                          {article.excerpt}
+                        </p>
+                        <div className="flex items-center mt-3 text-sm text-gray-300">
+                          <span>{article.author}</span>
+                          <span className="mx-2">•</span>
+                          <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
+                
+                {pinnedNews.length > 1 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {pinnedNews.slice(1).map((article, index) => (
+                      <NewsCard key={`breaking-secondary-${article.id}-${index}`} article={article} />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           {/* Celebrity News */}
-          <NewsSection title={t('celebrities')} news={celebrityNews} />
+          <div id="celebrities">
+            <NewsSection title={t('celebrities')} news={celebrityNews} />
+          </div>
 
           {/* Entertainment News */}
-          <NewsSection title={t('entertainment')} news={entertainmentNews} />
+          <div id="entertainment">
+            <NewsSection title={t('entertainment')} news={entertainmentNews} />
+          </div>
 
           {/* Other News */}
           {otherNews.length > 0 && (
@@ -150,7 +231,7 @@ const IndexContent = () => {
           )}
 
           {/* Popular Tags */}
-          <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+          <div className="bg-gray-50 p-4 rounded-lg shadow-sm mb-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               Popular Tags
             </h3>
@@ -165,6 +246,9 @@ const IndexContent = () => {
               ))}
             </div>
           </div>
+
+          {/* Contact Us Section */}
+          <ContactUs />
         </div>
       </div>
 
@@ -181,7 +265,11 @@ const Index = () => {
   return (
     <LanguageProvider>
       <div className="min-h-screen bg-white">
-        <Header />
+        <Header onSearch={(query) => {
+          // This will be handled by IndexContent component
+          const event = new CustomEvent('search', { detail: query });
+          window.dispatchEvent(event);
+        }} />
         <IndexContent />
       </div>
     </LanguageProvider>
