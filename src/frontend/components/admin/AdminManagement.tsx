@@ -1,4 +1,3 @@
-
 // Admin user management component
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AdminUser, DEFAULT_PERMISSIONS, ROLE_PERMISSIONS } from '@/types/admin';
-import { Plus, Edit, Trash2, Crown, Shield, User } from 'lucide-react';
+import { Plus, Edit, Trash2, Crown, Shield, User, Users } from 'lucide-react';
 
 export const AdminManagement = () => {
   const { currentAdmin } = useAuth();

@@ -1,4 +1,3 @@
-
 // Updated admin dashboard with role-based access and enhanced features
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
@@ -11,11 +10,12 @@ import { AdminLogin } from '@/components/admin/AdminLogin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Post } from '@/types/post';
 import { mockNews } from '@/data/mockNews';
+import { transformLegacyPosts } from '@/utils/postHelpers';
 import { BarChart3, FileText, Users, TrendingUp } from 'lucide-react';
 
 const AdminDashboardContent = () => {
   const { currentAdmin, logout, hasPermission, isLoading } = useAuth();
-  const [posts, setPosts] = useState<Post[]>(mockNews);
+  const [posts, setPosts] = useState<Post[]>(transformLegacyPosts(mockNews));
   const [activeTab, setActiveTab] = useState('dashboard');
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [showPostEditor, setShowPostEditor] = useState(false);
