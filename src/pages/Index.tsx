@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
@@ -104,18 +103,18 @@ const IndexContent = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Sidebar - Stories and Horoscope */}
-        <div className="lg:col-span-1 order-2 lg:order-1">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Left Sidebar - Stories, Horoscope and Contact */}
+        <div className="lg:col-span-1 order-2 lg:order-1 space-y-6">
           {/* Stories Section */}
-          <div id="stories" className="mb-6">
+          <div id="stories">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
               <Stories />
             </div>
           </div>
 
           {/* Horoscope Section */}
-          <div id="horoscope" className="mb-6">
+          <div id="horoscope">
             <Horoscope />
           </div>
 
@@ -124,7 +123,7 @@ const IndexContent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="lg:col-span-2 order-1 lg:order-2">
+        <div className="lg:col-span-3 order-1 lg:order-2">
           {/* Breaking/Pinned News - Enhanced Display */}
           {pinnedNews.length > 0 && (
             <div className="mb-8">
@@ -192,7 +191,7 @@ const IndexContent = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className="lg:col-span-1 order-3">
+        <div className="lg:col-span-1 order-3 space-y-6">
           {/* Trending Section */}
           {trendingNews.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">

@@ -8,7 +8,6 @@ import { AdminManagement } from '@/frontend/components/admin/AdminManagement';
 import { StoriesManagement } from '@/frontend/components/admin/StoriesManagement';
 import { AdminUser } from '@/types/admin';
 import { Post } from '@/types/post';
-import { transformMockDataToPost } from '@/utils/postHelpers';
 import { mockNews } from '@/data/mockNews';
 
 const AdminDashboard = () => {
@@ -24,11 +23,32 @@ const AdminDashboard = () => {
     role: 'super_admin',
     createdAt: new Date().toISOString(),
     lastLogin: new Date().toISOString(),
-    isActive: true
+    isActive: true,
+    permissions: ['read', 'write', 'delete', 'admin']
   };
 
   // Transform mock data to posts
-  const posts = mockNews.map(transformMockDataToPost);
+  const posts: Post[] = mockNews.map((news, index) => ({
+    id: news.id || String(index),
+    title: news.title,
+    titleNp: news.titleNp || '',
+    excerpt: news.excerpt,
+    excerptNp: news.excerptNp || '',
+    content: news.content || news.excerpt,
+    contentNp: news.contentNp || news.excerptNp || '',
+    category: news.category,
+    tags: news.tags || [],
+    author: news.author,
+    publishedAt: news.publishedAt,
+    updatedAt: news.updatedAt || news.publishedAt,
+    status: 'published' as const,
+    featuredImage: news.image,
+    isPinned: news.isPinned || false,
+    viewCount: news.viewCount || 0,
+    seoTitle: news.title,
+    seoDescription: news.excerpt,
+    slug: news.title.toLowerCase().replace(/\s+/g, '-')
+  }));
 
   const handleLogout = () => {
     console.log('Logout clicked');
@@ -55,7 +75,7 @@ const AdminDashboard = () => {
       return (
         <PostForm
           post={editingPost}
-          onSubmit={(postData) => {
+          onSave={(postData) => {
             console.log('Post submitted:', postData);
             handleClosePostForm();
           }}
