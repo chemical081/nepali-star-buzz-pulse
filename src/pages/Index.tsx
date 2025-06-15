@@ -91,17 +91,7 @@ const IndexContent = () => {
   const otherNews = displayNews.filter(article => !['Celebrity', 'Entertainment', 'Trending', 'Sports'].includes(article.category) && !article.isPinned);
 
   return (
-    <main className="container mx-auto px-4 py-6 max-w-6xl">
-      {/* Stories Section */}
-      <div id="stories">
-        <Stories />
-      </div>
-
-      {/* Horoscope Section */}
-      <div id="horoscope" className="mb-8">
-        <Horoscope />
-      </div>
-
+    <main className="container mx-auto px-4 py-6 max-w-7xl">
       {/* Search Results */}
       {searchQuery && (
         <div className="mb-6 p-4 bg-blue-50 rounded-lg">
@@ -114,9 +104,27 @@ const IndexContent = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left Sidebar - Stories and Horoscope */}
+        <div className="lg:col-span-1 order-2 lg:order-1">
+          {/* Stories Section */}
+          <div id="stories" className="mb-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <Stories />
+            </div>
+          </div>
+
+          {/* Horoscope Section */}
+          <div id="horoscope" className="mb-6">
+            <Horoscope />
+          </div>
+
+          {/* Contact Us Section */}
+          <ContactUs />
+        </div>
+
         {/* Main Content */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 order-1 lg:order-2">
           {/* Breaking/Pinned News - Enhanced Display */}
           {pinnedNews.length > 0 && (
             <div className="mb-8">
@@ -183,17 +191,17 @@ const IndexContent = () => {
           )}
         </div>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
+        {/* Right Sidebar */}
+        <div className="lg:col-span-1 order-3">
           {/* Trending Section */}
           {trendingNews.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
                 {t('trending')}
               </h3>
               <div className="space-y-4">
                 {trendingNews.map((article, index) => (
-                  <div key={`trending-${article.id}-${index}`} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
+                  <div key={`trending-${article.id}-${index}`} className="group cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
                     <div className="flex items-start space-x-3">
                       <div className="w-16 h-12 flex-shrink-0 overflow-hidden rounded">
                         <img
@@ -219,13 +227,13 @@ const IndexContent = () => {
 
           {/* Sports Section */}
           {sportsNews.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
                 {t('sports')}
               </h3>
               <div className="space-y-3">
                 {sportsNews.map((article, index) => (
-                  <div key={`sports-${article.id}-${index}`} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
+                  <div key={`sports-${article.id}-${index}`} className="group cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
                     <h4 className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-red-600 transition-colors mb-1">
                       {article.title}
                     </h4>
@@ -239,7 +247,7 @@ const IndexContent = () => {
           )}
 
           {/* Popular Tags */}
-          <div className="bg-gray-50 p-4 rounded-lg shadow-sm mb-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               Popular Tags
             </h3>
@@ -247,16 +255,13 @@ const IndexContent = () => {
               {['Bollywood', 'Hollywood', 'Music', 'Fashion', 'Awards', 'Movies', 'TV Shows', 'Celebrity Life'].map((tag) => (
                 <span
                   key={tag}
-                  className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-red-100 hover:text-red-700 cursor-pointer transition-colors border shadow-sm hover:shadow-md"
+                  className="bg-gray-50 px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-red-100 hover:text-red-700 cursor-pointer transition-colors border border-gray-200 hover:border-red-200"
                 >
                   #{tag}
                 </span>
               ))}
             </div>
           </div>
-
-          {/* Contact Us Section */}
-          <ContactUs />
         </div>
       </div>
 
@@ -272,7 +277,7 @@ const IndexContent = () => {
 const Index = () => {
   return (
     <LanguageProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
         <Header onSearch={(query) => {
           // This will be handled by IndexContent component
           const event = new CustomEvent('search', { detail: query });

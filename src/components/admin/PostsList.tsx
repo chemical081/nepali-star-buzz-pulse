@@ -61,7 +61,7 @@ export const PostsList = ({ posts, onCreatePost, onEditPost }: PostsListProps) =
                     </span>
                   )}
                 </div>
-                <span className="text-sm text-gray-500">{post.readTime}</span>
+                <span className="text-sm text-gray-500">5 min read</span>
               </div>
               <p className="text-gray-700 text-sm mt-2 line-clamp-2">{post.excerpt}</p>
             </CardContent>

@@ -80,19 +80,19 @@ export const Stories = () => {
 
   return (
     <>
-      <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4 border-b-3 border-red-600 pb-1 inline-block">
+      <div>
+        <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">
           Stories
-        </h2>
-        <div className="flex space-x-4 overflow-x-auto pb-2">
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
           {mockStories.map((story, index) => (
             <div
               key={story.id}
-              className="flex-shrink-0 cursor-pointer group"
+              className="cursor-pointer group"
               onClick={() => openStory(story, index)}
             >
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-3 border-red-500 p-1">
-                <div className="w-full h-full rounded-full overflow-hidden">
+              <div className="relative w-full aspect-square rounded-xl overflow-hidden border-2 border-red-500 p-1">
+                <div className="w-full h-full rounded-lg overflow-hidden">
                   <img
                     src={story.thumbnail || story.url}
                     alt={story.title}
@@ -100,12 +100,12 @@ export const Stories = () => {
                   />
                 </div>
                 {story.type === 'video' && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-full">
-                    <Play className="w-6 h-6 text-white" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-lg">
+                    <Play className="w-4 h-4 text-white" />
                   </div>
                 )}
               </div>
-              <p className="text-xs text-center mt-1 text-gray-600 truncate w-20">
+              <p className="text-xs text-center mt-2 text-gray-600 truncate">
                 {story.title}
               </p>
             </div>
