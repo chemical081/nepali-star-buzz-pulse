@@ -7,7 +7,7 @@ import { PostForm } from '@/components/admin/PostForm';
 import { AdminManagement } from '@/frontend/components/admin/AdminManagement';
 import { StoriesManagement } from '@/frontend/components/admin/StoriesManagement';
 import { AdminUser } from '@/types/admin';
-import { Post } from '@/types/post';
+import { Post, PostContent, PostImage } from '@/types/post';
 import { mockNews } from '@/data/mockNews';
 
 const AdminDashboard = () => {
@@ -24,31 +24,65 @@ const AdminDashboard = () => {
     createdAt: new Date().toISOString(),
     lastLogin: new Date().toISOString(),
     isActive: true,
-    permissions: ['read', 'write', 'delete', 'admin']
+    permissions: [
+      { id: 'read', name: 'Read', description: 'Read access' },
+      { id: 'write', name: 'Write', description: 'Write access' },
+      { id: 'delete', name: 'Delete', description: 'Delete access' },
+      { id: 'admin', name: 'Admin', description: 'Admin access' }
+    ]
   };
 
-  // Transform mock data to posts
-  const posts: Post[] = mockNews.map((news, index) => ({
-    id: news.id || String(index),
-    title: news.title,
-    titleNp: news.titleNp || '',
-    excerpt: news.excerpt,
-    excerptNp: news.excerptNp || '',
-    content: news.content || news.excerpt,
-    contentNp: news.contentNp || news.excerptNp || '',
-    category: news.category,
-    tags: news.tags || [],
-    author: news.author,
-    publishedAt: news.publishedAt,
-    updatedAt: news.updatedAt || news.publishedAt,
-    status: 'published' as const,
-    featuredImage: news.image,
-    isPinned: news.isPinned || false,
-    viewCount: news.viewCount || 0,
-    seoTitle: news.title,
-    seoDescription: news.excerpt,
-    slug: news.title.toLowerCase().replace(/\s+/g, '-')
-  }));
+  // Transform mock data to posts with proper type structure
+  const posts: Post[] = mockNews.map((news, index) => {
+    // Create content blocks from simple content
+    const content: PostContent[] = news.excerpt ? [
+      {
+        id: `content-${news.id}`,
+        type: 'text',
+        content: news.excerpt,
+        order: 0
+      }
+    ] : [];
+
+    const contentNp: PostContent[] = news.excerptNp ? [
+      {
+        id: `content-np-${news.id}`,
+        type: 'text',
+        content: news.excerptNp,
+        order: 0
+      }
+    ] : [];
+
+    // Create images array from single image
+    const images: PostImage[] = news.image ? [
+      {
+        id: `img-${news.id}`,
+        url: news.image,
+        alt: news.title,
+        position: 'header',
+        order: 0
+      }
+    ] : [];
+
+    return {
+      id: news.id || String(index),
+      title: news.title,
+      titleNp: news.titleNp || '',
+      excerpt: news.excerpt,
+      excerptNp: news.excerptNp || '',
+      content,
+      contentNp,
+      category: news.category,
+      images,
+      author: news.author,
+      publishedAt: news.publishedAt,
+      updatedAt: news.publishedAt,
+      status: 'published' as const,
+      isPinned: news.isPinned || false,
+      likes: news.likes || 0,
+      comments: news.comments || 0
+    };
+  });
 
   const handleLogout = () => {
     console.log('Logout clicked');
