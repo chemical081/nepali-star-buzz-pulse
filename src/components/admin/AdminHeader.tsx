@@ -1,47 +1,46 @@
 
-import { useLanguage } from '@/contexts/LanguageContext';
+import React from 'react';
+import { LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Plus, LogOut, Globe } from 'lucide-react';
+import { AdminUser } from '@/types/admin';
 
 interface AdminHeaderProps {
+  currentAdmin: AdminUser;
   onLogout: () => void;
-  onNewPost: () => void;
 }
 
-export const AdminHeader = ({ onLogout, onNewPost }: AdminHeaderProps) => {
-  const { language, toggleLanguage, t } = useLanguage();
-
+export const AdminHeader = ({ currentAdmin, onLogout }: AdminHeaderProps) => {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              {t('siteTitle')} - {t('admin')}
-            </h1>
+    <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">NS</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+            <p className="text-sm text-gray-600">Nepali Star Buzz</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <User className="w-5 h-5 text-gray-600" />
+            <div className="text-sm">
+              <p className="font-medium text-gray-900">{currentAdmin.username}</p>
+              <p className="text-gray-600 capitalize">{currentAdmin.role.replace('_', ' ')}</p>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <Button onClick={onNewPost} className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700">
-              <Plus className="w-4 h-4" />
-              <span>{t('createPost')}</span>
-            </Button>
-            
-            <Button
-              onClick={toggleLanguage}
-              variant="outline"
-              size="sm"
-              className="flex items-center space-x-2"
-            >
-              <Globe className="w-4 h-4" />
-              <span>{language === 'en' ? 'नेपाली' : 'English'}</span>
-            </Button>
-            
-            <Button onClick={onLogout} variant="outline" className="flex items-center space-x-2">
-              <LogOut className="w-4 h-4" />
-              <span>{t('logout')}</span>
-            </Button>
-          </div>
+          <Button
+            onClick={onLogout}
+            variant="outline"
+            size="sm"
+            className="flex items-center space-x-2 border-red-200 hover:bg-red-50"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
+          </Button>
         </div>
       </div>
     </header>

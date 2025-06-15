@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { NewsCard } from '@/components/NewsCard';
 import { Stories } from '@/components/Stories';
 import { ContactUs } from '@/components/ContactUs';
+import { Horoscope } from '@/components/Horoscope';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { mockNews } from '@/data/mockNews';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -95,6 +97,12 @@ const IndexContent = () => {
         <Stories />
       </div>
 
+      {/* Horoscope Section */}
+      <div id="horoscope" className="mb-8">
+        <Horoscope />
+      </div>
+
+      {/* Search Results */}
       {searchQuery && (
         <div className="mb-6 p-4 bg-blue-50 rounded-lg">
           <p className="text-blue-800">

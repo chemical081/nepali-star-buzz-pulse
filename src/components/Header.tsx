@@ -60,6 +60,9 @@ export const Header = ({ onSearch }: HeaderProps) => {
             <a href="#stories" className="text-gray-700 hover:text-red-600 transition-colors font-medium text-sm">
               Stories
             </a>
+            <a href="#horoscope" className="text-gray-700 hover:text-red-600 transition-colors font-medium text-sm">
+              Horoscope
+            </a>
             <a href="#contact" className="text-gray-700 hover:text-red-600 transition-colors font-medium text-sm">
               Contact
             </a>
