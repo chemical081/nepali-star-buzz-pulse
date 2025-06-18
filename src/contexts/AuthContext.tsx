@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const MOCK_ADMINS: AdminUser[] = [
   {
     id: '1',
-    username: 'superadmin',
+    username: 'Dipesh',
     email: 'super@nepalistar.com',
     role: 'super_admin',
     permissions: ROLE_PERMISSIONS.super_admin,
@@ -26,7 +26,7 @@ const MOCK_ADMINS: AdminUser[] = [
   },
   {
     id: '2',
-    username: 'admin',
+    username: 'Sagar',
     email: 'admin@nepalistar.com',
     role: 'admin',
     permissions: ROLE_PERMISSIONS.admin,
@@ -51,8 +51,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (credentials: { username: string; password: string }): Promise<boolean> => {
     // Mock authentication - replace with real API call
     const validCredentials = [
-      { username: 'superadmin', password: 'nepalistar2024' },
-      { username: 'admin', password: 'admin123' }
+      { username: 'superadmin', password: 'Dipesh12345' },
+      { username: 'admin', password: 'Sagar12345' }
     ];
 
     const isValid = validCredentials.some(
