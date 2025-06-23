@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search, Globe } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -38,9 +37,13 @@ export const Header = ({ onSearch }: HeaderProps) => {
             className="flex items-center space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={handleLogoClick}
           >
-            {/* Logo placeholder - you can add your image here */}
-            <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">NS</span>
+            {/* Updated logo with your uploaded image */}
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/cdd6927f-a87d-4f51-83da-0d2edb0a8929.png" 
+                alt="Nepali Star Buzz Logo"
+                className="w-12 h-12 object-contain"
+              />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">
               {t('siteTitle')}
