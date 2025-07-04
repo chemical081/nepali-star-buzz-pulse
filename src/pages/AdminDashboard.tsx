@@ -6,7 +6,7 @@ import { PostsList } from '@/components/admin/PostsList';
 import { PostForm } from '@/components/admin/PostForm';
 import { AdminManagement } from '@/frontend/components/admin/AdminManagement';
 import { StoriesManagement } from '@/frontend/components/admin/StoriesManagement';
-import { AdminUser } from '@/types/admin';
+import { AdminLogin } from '@/components/admin/AdminLogin';
 import { Post, PostContent, PostImage } from '@/types/post';
 import { mockNews } from '@/data/mockNews';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,7 +16,24 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('posts');
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [showPostForm, setShowPostForm] = useState(false);
-  const { currentAdmin, logout } = useAuth();
+  const { currentAdmin, logout, isLoading } = useAuth();
+
+  // Show loading state while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!currentAdmin) {
+    return <AdminLogin />;
+  }
   
   // Transform mock data to posts with proper type structure
   const posts: Post[] = mockNews.map((news, index) => {
