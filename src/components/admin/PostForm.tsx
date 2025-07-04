@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,6 @@ interface PostFormProps {
 }
 
 export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
-  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     title: post?.title || '',
     titleNp: post?.titleNp || '',
@@ -57,7 +55,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <h2 className="text-2xl font-bold mb-6">
-        {post ? t('editPost') : t('createPost')}
+        {post ? 'Edit Post' : 'Create New Post'}
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -133,7 +131,7 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="category">{t('category')}</Label>
+            <Label htmlFor="category">Category</Label>
             <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
               <SelectTrigger>
                 <SelectValue />

@@ -9,29 +9,15 @@ import { StoriesManagement } from '@/frontend/components/admin/StoriesManagement
 import { AdminUser } from '@/types/admin';
 import { Post, PostContent, PostImage } from '@/types/post';
 import { mockNews } from '@/data/mockNews';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('posts');
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [showPostForm, setShowPostForm] = useState(false);
+  const { currentAdmin, logout } = useAuth();
   
-  // Mock admin user
-  const currentAdmin: AdminUser = {
-    id: '1',
-    username: 'admin',
-    email: 'admin@example.com',
-    role: 'super_admin',
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-    isActive: true,
-    permissions: [
-      { id: 'read', name: 'Read', description: 'Read access' },
-      { id: 'write', name: 'Write', description: 'Write access' },
-      { id: 'delete', name: 'Delete', description: 'Delete access' },
-      { id: 'admin', name: 'Admin', description: 'Admin access' }
-    ]
-  };
-
   // Transform mock data to posts with proper type structure
   const posts: Post[] = mockNews.map((news, index) => {
     // Create content blocks from simple content
@@ -85,8 +71,11 @@ const AdminDashboard = () => {
   });
 
   const handleLogout = () => {
-    console.log('Logout clicked');
-    // Implement logout logic
+    logout();
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of the admin panel.",
+    });
   };
 
   const handleCreatePost = () => {
@@ -104,15 +93,24 @@ const AdminDashboard = () => {
     setEditingPost(null);
   };
 
+  const handleSavePost = (postData: any) => {
+    // Here you would typically save to your backend
+    console.log('Post saved:', postData);
+    toast({
+      title: editingPost ? "Post updated" : "Post created",
+      description: editingPost 
+        ? "The post has been updated successfully." 
+        : "The new post has been created successfully.",
+    });
+    handleClosePostForm();
+  };
+
   const renderContent = () => {
     if (showPostForm) {
       return (
         <PostForm
           post={editingPost}
-          onSave={(postData) => {
-            console.log('Post submitted:', postData);
-            handleClosePostForm();
-          }}
+          onSave={handleSavePost}
           onCancel={handleClosePostForm}
         />
       );
@@ -131,11 +129,26 @@ const AdminDashboard = () => {
         return <StoriesManagement />;
       case 'admins':
         return <AdminManagement />;
+      case 'dashboard':
       default:
         return (
           <div className="text-center py-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to Admin Dashboard</h2>
             <p className="text-gray-600">Select a section from the sidebar to get started.</p>
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Posts</h3>
+                <p className="text-3xl font-bold text-red-600">{posts.length}</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Published</h3>
+                <p className="text-3xl font-bold text-green-600">{posts.filter(p => p.status === 'published').length}</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Pinned Posts</h3>
+                <p className="text-3xl font-bold text-blue-600">{posts.filter(p => p.isPinned).length}</p>
+              </div>
+            </div>
           </div>
         );
     }

@@ -1,14 +1,14 @@
 
-// Admin sidebar component with role-based navigation
 import React from 'react';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
 import { 
-  LayoutDashboard, 
   FileText, 
   Users, 
-  Video,
-  Settings
+  BookOpen, 
+  Settings,
+  LogOut,
+  Home
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -17,64 +17,59 @@ interface AdminSidebarProps {
 }
 
 export const AdminSidebar = ({ activeTab, onTabChange }: AdminSidebarProps) => {
-  const { hasPermission } = useAuth();
+  const { currentAdmin, logout } = useAuth();
 
   const menuItems = [
-    {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icon: LayoutDashboard,
-      permission: null
-    },
-    {
-      id: 'posts',
-      label: 'Posts',
-      icon: FileText,
-      permission: 'create_posts'
-    },
-    {
-      id: 'stories',
-      label: 'Stories',
-      icon: Video,
-      permission: 'manage_stories'
-    },
-    {
-      id: 'admins',
-      label: 'Admin Users',
-      icon: Users,
-      permission: 'manage_admins'
-    }
+    { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'posts', label: 'Posts', icon: FileText },
+    { id: 'stories', label: 'Stories', icon: BookOpen },
+    { id: 'admins', label: 'Admins', icon: Users },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const filteredMenuItems = menuItems.filter(item => 
-    !item.permission || hasPermission(item.permission)
-  );
-
   return (
-    <aside className="w-64 bg-white shadow-sm border-r border-gray-200 min-h-screen">
-      <div className="p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-6">Admin Panel</h2>
-        <nav className="space-y-2">
-          {filteredMenuItems.map((item) => {
+    <div className="bg-white shadow-lg h-full w-64 flex flex-col">
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-bold text-gray-900">Admin Panel</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Welcome, {currentAdmin?.username || 'Admin'}
+        </p>
+      </div>
+      
+      <nav className="flex-1 p-4">
+        <ul className="space-y-2">
+          {menuItems.map((item) => {
             const Icon = item.icon;
             return (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={cn(
-                  "w-full flex items-center space-x-3 px-4 py-3 text-left rounded-lg transition-colors",
-                  activeTab === item.id
-                    ? "bg-red-50 text-red-700 border border-red-200"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                )}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
+              <li key={item.id}>
+                <Button
+                  onClick={() => onTabChange(item.id)}
+                  variant={activeTab === item.id ? 'default' : 'ghost'}
+                  className={`w-full justify-start ${
+                    activeTab === item.id 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'hover:bg-gray-100'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 mr-3" />
+                  {item.label}
+                </Button>
+              </li>
             );
           })}
-        </nav>
+        </ul>
+      </nav>
+      
+      <div className="p-4 border-t border-gray-200">
+        <Button
+          onClick={logout}
+          variant="ghost"
+          className="w-full justify-start text-red-600 hover:bg-red-50"
+        >
+          <LogOut className="w-4 h-4 mr-3" />
+          Logout
+        </Button>
       </div>
-    </aside>
+    </div>
   );
 };
