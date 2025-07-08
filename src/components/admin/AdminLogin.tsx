@@ -2,7 +2,7 @@
 // Updated admin login with enhanced styling
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,13 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Crown, Shield, User, AlertCircle } from 'lucide-react';
 
-interface AdminLoginProps {
-  onLogin: (credentials: { username: string; password: string }) => void;
-}
-
-export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
+export const AdminLogin = () => {
   const { login } = useAuth();
-  const { t } = useLanguage();
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +23,7 @@ export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
     
     try {
       const success = await login(credentials);
-      if (success) {
-        onLogin(credentials);
-      } else {
+      if (!success) {
         setError('Invalid username or password');
       }
     } catch (err) {
