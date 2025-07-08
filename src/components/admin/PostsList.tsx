@@ -9,9 +9,10 @@ interface PostsListProps {
   posts: Post[];
   onCreatePost: () => void;
   onEditPost: (post: Post) => void;
+  onDeletePost: (postId: string) => void;
 }
 
-export const PostsList = ({ posts, onCreatePost, onEditPost }: PostsListProps) => {
+export const PostsList = ({ posts, onCreatePost, onEditPost, onDeletePost }: PostsListProps) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -53,8 +54,7 @@ export const PostsList = ({ posts, onCreatePost, onEditPost }: PostsListProps) =
                     className="text-red-600 hover:text-red-700"
                     onClick={() => {
                       if (confirm('Are you sure you want to delete this post?')) {
-                        // Handle delete - add your delete logic here
-                        console.log('Deleting post:', post.id);
+                        onDeletePost(post.id);
                       }
                     }}
                   >

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/frontend/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { PostsList } from '@/components/admin/PostsList';
@@ -16,6 +16,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('posts');
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [showPostForm, setShowPostForm] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
   const { currentAdmin, logout, isLoading } = useAuth();
 
   // Show loading state while auth is initializing
@@ -34,58 +35,61 @@ const AdminDashboard = () => {
   if (!currentAdmin) {
     return <AdminLogin />;
   }
-  
-  // Transform mock data to posts with proper type structure
-  const posts: Post[] = mockNews.map((news, index) => {
-    // Create content blocks from simple content
-    const content: PostContent[] = news.excerpt ? [
-      {
-        id: `content-${news.id}`,
-        type: 'text',
-        content: news.excerpt,
-        order: 0
-      }
-    ] : [];
 
-    const contentNp: PostContent[] = news.excerptNp ? [
-      {
-        id: `content-np-${news.id}`,
-        type: 'text',
-        content: news.excerptNp,
-        order: 0
-      }
-    ] : [];
+  // Initialize posts from mock data on first load
+  useEffect(() => {
+    const transformedPosts: Post[] = mockNews.map((news, index) => {
+      // Create content blocks from simple content
+      const content: PostContent[] = news.excerpt ? [
+        {
+          id: `content-${news.id}`,
+          type: 'text',
+          content: news.excerpt,
+          order: 0
+        }
+      ] : [];
 
-    // Create images array from single image
-    const images: PostImage[] = news.image ? [
-      {
-        id: `img-${news.id}`,
-        url: news.image,
-        alt: news.title,
-        position: 'header',
-        order: 0
-      }
-    ] : [];
+      const contentNp: PostContent[] = news.excerptNp ? [
+        {
+          id: `content-np-${news.id}`,
+          type: 'text',
+          content: news.excerptNp,
+          order: 0
+        }
+      ] : [];
 
-    return {
-      id: news.id || String(index),
-      title: news.title,
-      titleNp: news.titleNp || '',
-      excerpt: news.excerpt,
-      excerptNp: news.excerptNp || '',
-      content,
-      contentNp,
-      category: news.category,
-      images,
-      author: news.author,
-      publishedAt: news.publishedAt,
-      updatedAt: news.publishedAt,
-      status: 'published' as const,
-      isPinned: news.isPinned || false,
-      likes: news.likes || 0,
-      comments: news.comments || 0
-    };
-  });
+      // Create images array from single image
+      const images: PostImage[] = news.image ? [
+        {
+          id: `img-${news.id}`,
+          url: news.image,
+          alt: news.title,
+          position: 'header',
+          order: 0
+        }
+      ] : [];
+
+      return {
+        id: news.id || String(index),
+        title: news.title,
+        titleNp: news.titleNp || '',
+        excerpt: news.excerpt,
+        excerptNp: news.excerptNp || '',
+        content,
+        contentNp,
+        category: news.category,
+        images,
+        author: news.author,
+        publishedAt: news.publishedAt,
+        updatedAt: news.publishedAt,
+        status: 'published' as const,
+        isPinned: news.isPinned || false,
+        likes: news.likes || 0,
+        comments: news.comments || 0
+      };
+    });
+    setPosts(transformedPosts);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -110,8 +114,15 @@ const AdminDashboard = () => {
     setEditingPost(null);
   };
 
-  const handleSavePost = (postData: any) => {
-    // Here you would typically save to your backend
+  const handleSavePost = (postData: Post) => {
+    if (editingPost) {
+      // Update existing post
+      setPosts(prev => prev.map(p => p.id === editingPost.id ? postData : p));
+    } else {
+      // Add new post
+      setPosts(prev => [postData, ...prev]);
+    }
+    
     console.log('Post saved:', postData);
     toast({
       title: editingPost ? "Post updated" : "Post created",
@@ -120,6 +131,14 @@ const AdminDashboard = () => {
         : "The new post has been created successfully.",
     });
     handleClosePostForm();
+  };
+
+  const handleDeletePost = (postId: string) => {
+    setPosts(prev => prev.filter(p => p.id !== postId));
+    toast({
+      title: "Post deleted",
+      description: "The post has been deleted successfully.",
+    });
   };
 
   const renderContent = () => {
@@ -140,6 +159,7 @@ const AdminDashboard = () => {
             posts={posts}
             onCreatePost={handleCreatePost}
             onEditPost={handleEditPost}
+            onDeletePost={handleDeletePost}
           />
         );
       case 'stories':
