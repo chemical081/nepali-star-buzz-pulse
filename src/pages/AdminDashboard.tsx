@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AdminSidebar } from '@/frontend/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { PostsList } from '@/components/admin/PostsList';
-import { PostForm } from '@/components/admin/PostForm';
+import { EnhancedPostEditor } from '@/components/admin/EnhancedPostEditor';
 import { AdminManagement } from '@/frontend/components/admin/AdminManagement';
 import { StoriesManagement } from '@/frontend/components/admin/StoriesManagement';
 import { AdminLogin } from '@/components/admin/AdminLogin';
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
   const renderContent = () => {
     if (showPostForm) {
       return (
-        <PostForm
+        <EnhancedPostEditor
           post={editingPost}
           onSave={handleSavePost}
           onCancel={handleClosePostForm}

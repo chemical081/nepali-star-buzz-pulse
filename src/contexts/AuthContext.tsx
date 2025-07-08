@@ -51,16 +51,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (credentials: { username: string; password: string }): Promise<boolean> => {
     // Mock authentication - replace with real API call
     const validCredentials = [
-      { username: 'superadmin', password: 'Dipesh12345' },
-      { username: 'admin', password: 'Sagar12345' }
+      { username: 'superadmin', password: 'Dipesh12345', adminUsername: 'Dipesh' },
+      { username: 'admin', password: 'Sagar12345', adminUsername: 'Sagar' }
     ];
 
-    const isValid = validCredentials.some(
+    const validCred = validCredentials.find(
       cred => cred.username === credentials.username && cred.password === credentials.password
     );
 
-    if (isValid) {
-      const admin = MOCK_ADMINS.find(a => a.username === credentials.username);
+    if (validCred) {
+      const admin = MOCK_ADMINS.find(a => a.username === validCred.adminUsername);
       if (admin) {
         setCurrentAdmin(admin);
         localStorage.setItem('adminData', JSON.stringify(admin));

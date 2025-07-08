@@ -103,41 +103,6 @@ export const AdminLogin = () => {
           </CardContent>
         </Card>
 
-        {/* Demo Credentials */}
-        <Card className="bg-white/60 backdrop-blur-sm border border-gray-200">
-          <CardContent className="pt-6">
-            <h3 className="font-semibold text-gray-900 mb-3 text-center">Demo Accounts</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div className="flex items-center space-x-2">
-                  <Crown className="w-4 h-4 text-yellow-600" />
-                  <div>
-                    <p className="font-medium text-gray-900">Super Admin</p>
-                    <p className="text-gray-600">Full access</p>
-                  </div>
-                </div>
-                <div className="text-right text-xs text-gray-600">
-                  <p>superadmin</p>
-                  <p>nepalistar2024</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-4 h-4 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-gray-900">Admin</p>
-                    <p className="text-gray-600">Limited access</p>
-                  </div>
-                </div>
-                <div className="text-right text-xs text-gray-600">
-                  <p>admin</p>
-                  <p>admin123</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
