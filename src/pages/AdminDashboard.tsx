@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/frontend/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
@@ -19,25 +18,10 @@ const AdminDashboard = () => {
   const [showPostForm, setShowPostForm] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
 
-  // Show loading state while auth is initializing
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show login form if not authenticated
-  if (!currentAdmin) {
-    return <AdminLogin />;
-  }
-
-  // Initialize posts from mock data on first load
+  // Initialize posts from mock data on first load - this hook must be called unconditionally
   useEffect(() => {
+    if (!currentAdmin || isLoading) return; // Only run when authenticated and loaded
+    
     const transformedPosts: Post[] = mockNews.map((news, index) => {
       // Create content blocks from simple content
       const content: PostContent[] = news.excerpt ? [
@@ -89,7 +73,24 @@ const AdminDashboard = () => {
       };
     });
     setPosts(transformedPosts);
-  }, []);
+  }, [currentAdmin, isLoading]);
+
+  // Show loading state while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!currentAdmin) {
+    return <AdminLogin />;
+  }
 
   const handleLogout = () => {
     logout();
