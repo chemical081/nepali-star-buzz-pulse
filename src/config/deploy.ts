@@ -11,7 +11,7 @@ export const deployConfig = {
     : 'http://localhost:3000',
     
   // Admin route (keep it secret in production)
-  adminRoute: '/secret-admin-dashboard-2024',
+  adminRoute: '/admin-login',
   
   // Feature flags
   features: {

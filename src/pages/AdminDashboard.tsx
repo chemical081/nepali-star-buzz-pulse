@@ -13,11 +13,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
+  const { currentAdmin, logout, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('posts');
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [showPostForm, setShowPostForm] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const { currentAdmin, logout, isLoading } = useAuth();
 
   // Show loading state while auth is initializing
   if (isLoading) {
