@@ -5,6 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Languages, Type, Sparkles } from 'lucide-react';
 
 interface PostFormProps {
   post?: any;
@@ -29,6 +32,55 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
     comments: post?.comments || 0,
     publishedAt: post?.publishedAt || new Date().toISOString()
   });
+
+  const [englishFont, setEnglishFont] = useState('font-sans');
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const englishFonts = [
+    { value: 'font-sans', label: 'Default Sans' },
+    { value: 'font-serif', label: 'Serif' },
+    { value: 'font-mono', label: 'Monospace' },
+    { value: 'font-bold', label: 'Bold Sans' },
+    { value: 'font-light', label: 'Light Sans' }
+  ];
+
+  const autoTranslate = async (fromNepali = true) => {
+    setIsTranslating(true);
+    try {
+      // Mock translation - in real app, integrate with Google Translate API
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      if (fromNepali) {
+        // Translate Nepali to English
+        const translatedTitle = formData.titleNp ? `[Auto] ${formData.titleNp}` : '';
+        const translatedExcerpt = formData.excerptNp ? `[Auto] ${formData.excerptNp}` : '';
+        const translatedContent = formData.contentNp ? `[Auto] ${formData.contentNp}` : '';
+        
+        setFormData(prev => ({
+          ...prev,
+          title: translatedTitle,
+          excerpt: translatedExcerpt,
+          content: translatedContent
+        }));
+      } else {
+        // Translate English to Nepali
+        const translatedTitle = formData.title ? `[स्वचालित] ${formData.title}` : '';
+        const translatedExcerpt = formData.excerpt ? `[स्वचालित] ${formData.excerpt}` : '';
+        const translatedContent = formData.content ? `[स्वचालित] ${formData.content}` : '';
+        
+        setFormData(prev => ({
+          ...prev,
+          titleNp: translatedTitle,
+          excerptNp: translatedExcerpt,
+          contentNp: translatedContent
+        }));
+      }
+    } catch (error) {
+      console.error('Translation failed:', error);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,75 +111,148 @@ export const PostForm = ({ post, onSave, onCancel }: PostFormProps) => {
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="title">Title (English)</Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              required
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="titleNp">Title (Nepali)</Label>
-            <Input
-              id="titleNp"
-              value={formData.titleNp}
-              onChange={(e) => setFormData(prev => ({ ...prev, titleNp: e.target.value }))}
-              required
-            />
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="excerpt">Excerpt (English)</Label>
-            <Textarea
-              id="excerpt"
-              value={formData.excerpt}
-              onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-              rows={3}
-              required
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="excerptNp">Excerpt (Nepali)</Label>
-            <Textarea
-              id="excerptNp"
-              value={formData.excerptNp}
-              onChange={(e) => setFormData(prev => ({ ...prev, excerptNp: e.target.value }))}
-              rows={3}
-              required
-            />
-          </div>
-        </div>
+        {/* Priority: Nepali Content First */}
+        <Tabs defaultValue="nepali" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="nepali" className="flex items-center gap-2">
+              <Languages className="w-4 h-4" />
+              नेपाली सामग्री (मुख्य)
+              <Badge variant="default" className="ml-2">प्राथमिकता</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="english" className="flex items-center gap-2">
+              <Type className="w-4 h-4" />
+              English Content
+              <Badge variant="secondary" className="ml-2">Optional</Badge>
+            </TabsTrigger>
+          </TabsList>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="content">Content (English)</Label>
-            <Textarea
-              id="content"
-              value={formData.content}
-              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-              rows={5}
-              placeholder="Write the full article content here..."
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="contentNp">Content (Nepali)</Label>
-            <Textarea
-              id="contentNp"
-              value={formData.contentNp}
-              onChange={(e) => setFormData(prev => ({ ...prev, contentNp: e.target.value }))}
-              rows={5}
-              placeholder="पूरा लेखको सामग्री यहाँ लेख्नुहोस्..."
-            />
-          </div>
-        </div>
+          <TabsContent value="nepali" className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">नेपाली सामग्री (मुख्य भाषा)</h3>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => autoTranslate(true)}
+                  disabled={isTranslating}
+                  className="flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {isTranslating ? 'अनुवाद गर्दै...' : 'अंग्रेजीमा अनुवाद गर्नुहोस्'}
+                </Button>
+              </div>
+              
+              <div>
+                <Label htmlFor="titleNp">शीर्षक (नेपाली) *</Label>
+                <Input
+                  id="titleNp"
+                  value={formData.titleNp}
+                  onChange={(e) => setFormData(prev => ({ ...prev, titleNp: e.target.value }))}
+                  placeholder="यहाँ समाचारको शीर्षक लेख्नुहोस्..."
+                  className="text-lg font-semibold"
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="excerptNp">सारांश (नेपाली) *</Label>
+                <Textarea
+                  id="excerptNp"
+                  value={formData.excerptNp}
+                  onChange={(e) => setFormData(prev => ({ ...prev, excerptNp: e.target.value }))}
+                  rows={3}
+                  placeholder="समाचारको छोटो सारांश यहाँ लेख्नुहोस्..."
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="contentNp">पूरा सामग्री (नेपाली) *</Label>
+                <Textarea
+                  id="contentNp"
+                  value={formData.contentNp}
+                  onChange={(e) => setFormData(prev => ({ ...prev, contentNp: e.target.value }))}
+                  rows={8}
+                  placeholder="पूरा लेखको सामग्री यहाँ लेख्नुहोस्..."
+                  className="min-h-[200px]"
+                  required
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="english" className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">English Content (Optional)</h3>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="englishFont" className="text-sm">Font:</Label>
+                    <Select value={englishFont} onValueChange={setEnglishFont}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {englishFonts.map(font => (
+                          <SelectItem key={font.value} value={font.value}>
+                            <span className={font.value}>{font.label}</span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => autoTranslate(false)}
+                    disabled={isTranslating}
+                    className="flex items-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {isTranslating ? 'Translating...' : 'Translate to Nepali'}
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="title">Title (English)</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Enter article title in English..."
+                  className={`text-lg font-semibold ${englishFont}`}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="excerpt">Excerpt (English)</Label>
+                <Textarea
+                  id="excerpt"
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                  rows={3}
+                  placeholder="Brief summary of the article..."
+                  className={englishFont}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="content">Full Content (English)</Label>
+                <Textarea
+                  id="content"
+                  value={formData.content}
+                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                  rows={8}
+                  placeholder="Write the full article content here..."
+                  className={`min-h-[200px] ${englishFont}`}
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
