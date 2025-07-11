@@ -162,7 +162,7 @@ export const PostEditor = ({ post, onSave, onCancel }: PostEditorProps) => {
               </div>
               
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Content (English - Optional)</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Content (English - Secondary)</h3>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
