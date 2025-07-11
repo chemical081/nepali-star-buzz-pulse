@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PostContent, PostImage, Post } from '@/types/post';
 import { ImageManager } from './ImageManager';
 import { ContentBlockEditor } from './ContentBlockEditor';
-import { Plus, Save, X } from 'lucide-react';
+import { Plus, Save, X, Languages } from 'lucide-react';
 
 interface PostEditorProps {
   post?: Post;
@@ -43,6 +43,33 @@ export const PostEditor = ({ post, onSave, onCancel }: PostEditorProps) => {
     'Hollywood', 'Music', 'Fashion', 'Awards', 'Movies', 'TV Shows',
     'Celebrity Life', 'Breaking News', 'Latest News'
   ];
+
+  // Mock translation function (replace with actual API call)
+  const translateText = async (text: string, fromLang: string, toLang: string): Promise<string> => {
+    // This is a mock - replace with actual translation service
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return `[Translated from ${fromLang} to ${toLang}] ${text}`;
+  };
+
+  const handleTranslateTitle = async (direction: 'np-to-en' | 'en-to-np') => {
+    if (direction === 'np-to-en' && formData.titleNp) {
+      const translated = await translateText(formData.titleNp, 'Nepali', 'English');
+      setFormData(prev => ({ ...prev, title: translated }));
+    } else if (direction === 'en-to-np' && formData.title) {
+      const translated = await translateText(formData.title, 'English', 'Nepali');
+      setFormData(prev => ({ ...prev, titleNp: translated }));
+    }
+  };
+
+  const handleTranslateExcerpt = async (direction: 'np-to-en' | 'en-to-np') => {
+    if (direction === 'np-to-en' && formData.excerptNp) {
+      const translated = await translateText(formData.excerptNp, 'Nepali', 'English');
+      setFormData(prev => ({ ...prev, excerpt: translated }));
+    } else if (direction === 'en-to-np' && formData.excerpt) {
+      const translated = await translateText(formData.excerpt, 'English', 'Nepali');
+      setFormData(prev => ({ ...prev, excerptNp: translated }));
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,47 +109,103 @@ export const PostEditor = ({ post, onSave, onCancel }: PostEditorProps) => {
             {/* Basic Information */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Content (Nepali - Primary)</h3>
                 
                 <div>
-                  <Label htmlFor="title">Title (English)</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="titleNp">Title (Nepali)</Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="titleNp">Title (Nepali)</Label>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleTranslateTitle('np-to-en')}
+                      className="text-xs"
+                    >
+                      <Languages className="w-3 h-3 mr-1" />
+                      Translate to English
+                    </Button>
+                  </div>
                   <Input
                     id="titleNp"
                     value={formData.titleNp}
                     onChange={(e) => setFormData(prev => ({ ...prev, titleNp: e.target.value }))}
+                    placeholder="नेपालीमा शीर्षक लेख्नुहोस्..."
                     required
+                    className="font-nepali"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="excerpt">Excerpt (English)</Label>
-                  <Textarea
-                    id="excerpt"
-                    value={formData.excerpt}
-                    onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-                    rows={3}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="excerptNp">Excerpt (Nepali)</Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="excerptNp">Excerpt (Nepali)</Label>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleTranslateExcerpt('np-to-en')}
+                      className="text-xs"
+                    >
+                      <Languages className="w-3 h-3 mr-1" />
+                      Translate to English
+                    </Button>
+                  </div>
                   <Textarea
                     id="excerptNp"
                     value={formData.excerptNp}
                     onChange={(e) => setFormData(prev => ({ ...prev, excerptNp: e.target.value }))}
                     rows={3}
+                    placeholder="नेपालीमा संक्षिप्त विवरण लेख्नुहोस्..."
                     required
+                    className="font-nepali"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">Content (English - Optional)</h3>
+                
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="title">Title (English)</Label>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleTranslateTitle('en-to-np')}
+                      className="text-xs"
+                    >
+                      <Languages className="w-3 h-3 mr-1" />
+                      Translate to Nepali
+                    </Button>
+                  </div>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Write title in English..."
+                  />
+                </div>
+                
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="excerpt">Excerpt (English)</Label>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleTranslateExcerpt('en-to-np')}
+                      className="text-xs"
+                    >
+                      <Languages className="w-3 h-3 mr-1" />
+                      Translate to Nepali
+                    </Button>
+                  </div>
+                  <Textarea
+                    id="excerpt"
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                    rows={3}
+                    placeholder="Write excerpt in English..."
                   />
                 </div>
               </div>
