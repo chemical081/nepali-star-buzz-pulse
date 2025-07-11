@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/frontend/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
+import { Header } from '@/components/Header';
 import { PostsList } from '@/components/admin/PostsList';
 import { EnhancedPostEditor } from '@/components/admin/EnhancedPostEditor';
 import { AdminManagement } from '@/frontend/components/admin/AdminManagement';
@@ -193,15 +194,18 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      
-      <div className="flex-1 flex flex-col">
-        <AdminHeader currentAdmin={currentAdmin} onLogout={handleLogout} />
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="flex">
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        
+        <div className="flex-1 flex flex-col">
+          <AdminHeader currentAdmin={currentAdmin} onLogout={handleLogout} />
         
         <main className="flex-1 p-6 overflow-auto">
           {renderContent()}
         </main>
+        </div>
       </div>
     </div>
   );
